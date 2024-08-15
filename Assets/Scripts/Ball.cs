@@ -5,17 +5,21 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    private const string LAUNCH_BALL_STRING = "LaunchBall";
+
     [SerializeField] private float speed;
     private float incrementSpeedMultiplier;
     private Vector2 moveDirection;
+    private Vector3 initialPosition;
     private Rigidbody2D rb;
 
     private void Awake(){
+        initialPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
     }
 
     private void Start(){
-        LaunchBall();
+        Invoke(LAUNCH_BALL_STRING, 2f);
     }
 
     private void FixedUpdate(){
@@ -72,5 +76,13 @@ public class Ball : MonoBehaviour
         } else {
             WallBounceBall(collision.transform);
         }
+    }
+
+    public void RestartBall(){
+        moveDirection = Vector2.zero;
+        rb.velocity = Vector2.zero;
+        transform.position = initialPosition;
+
+        Invoke(LAUNCH_BALL_STRING, 2f);
     }
 }
