@@ -8,7 +8,8 @@ public class Ball : MonoBehaviour
     private const string LAUNCH_BALL_STRING = "LaunchBall";
 
     [SerializeField] private float speed;
-    private float incrementSpeedMultiplier;
+    [SerializeField] private float incrementSpeedMultiplier;
+    private float hitCounter;
     private Vector2 moveDirection;
     private Vector3 initialPosition;
     private Rigidbody2D rb;
@@ -24,8 +25,8 @@ public class Ball : MonoBehaviour
 
     private void FixedUpdate(){
         float baseMultiplier = 1;
-        float moveX = moveDirection.x * speed * (baseMultiplier + incrementSpeedMultiplier);
-        float moveY = moveDirection.y * speed * (baseMultiplier + incrementSpeedMultiplier);
+        float moveX = moveDirection.x * speed * (baseMultiplier + hitCounter);
+        float moveY = moveDirection.y * speed * (baseMultiplier + hitCounter);
 
         rb.velocity = new Vector2(moveX, moveY);
     } 
@@ -54,7 +55,7 @@ public class Ball : MonoBehaviour
         }
          
         moveDirection = new Vector2(moveX, moveY);
-        incrementSpeedMultiplier += .025f;
+        hitCounter += incrementSpeedMultiplier;
     }
 
     private void WallBounceBall(Transform wallTransform){
@@ -82,6 +83,7 @@ public class Ball : MonoBehaviour
         moveDirection = Vector2.zero;
         rb.velocity = Vector2.zero;
         transform.position = initialPosition;
+        incrementSpeedMultiplier = 0;
 
         Invoke(LAUNCH_BALL_STRING, 2f);
     }

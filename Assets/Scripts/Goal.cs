@@ -6,16 +6,23 @@ using UnityEngine;
 
 public class Goal : MonoBehaviour
 {
-    public event EventHandler OnPlayerOneScored;
-    public event EventHandler OnPlayerTwoScored;
+    public static event EventHandler<OnPlayerScoredEventArgs> OnAnyPlayerScored;
+
+    public class OnPlayerScoredEventArgs : EventArgs{
+        public bool playerOneScored;
+    }
+
+    public static void ResetStaticData(){
+        OnAnyPlayerScored = null;
+    }
 
     [SerializeField] private bool playerOneGoal;
 
     private void OnTriggerEnter2D(Collider2D collider2D){
         if(playerOneGoal){
-            OnPlayerTwoScored?.Invoke(this, EventArgs.Empty);
+            OnAnyPlayerScored?.Invoke(this, new OnPlayerScoredEventArgs{playerOneScored = false});
         } else {
-            OnPlayerOneScored?.Invoke(this, EventArgs.Empty);
+            OnAnyPlayerScored?.Invoke(this, new OnPlayerScoredEventArgs{playerOneScored = true});
         }
 
         collider2D.gameObject.GetComponent<Ball>().RestartBall();
