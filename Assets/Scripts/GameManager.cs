@@ -1,12 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour{
 
     public static GameManager Instance {get; private set;}
+
+    private const string MAIN_MENU_SCENE_NAME = "MainMenuScene";
 
     public event EventHandler OnGamePaused;
     public event EventHandler OnGameUnpaused;
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour{
         }
     }
     
-    private void TogglePauseGame(){
+    public void TogglePauseGame(){
         gameIsPaused = !gameIsPaused;
 
         if(gameIsPaused){
@@ -35,5 +35,15 @@ public class GameManager : MonoBehaviour{
             Time.timeScale = 1f;
             OnGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    public void RestartGame(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1f;
+    }
+
+    public void GoToMainMenu(){
+        SceneManager.LoadScene(MAIN_MENU_SCENE_NAME);
+        Time.timeScale = 1f;
     }
 }
