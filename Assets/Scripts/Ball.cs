@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,6 +6,13 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public event EventHandler OnBallRestart;
+    public event EventHandler<OnBallCollisionEventArgs> OnBallCollision;
+    public class OnBallCollisionEventArgs : EventArgs{
+        public Vector2 collisionPoint;
+        public Vector2 moveDirection;
+    }
+
     private const string LAUNCH_BALL_STRING = "LaunchBall";
 
     [SerializeField] private float speed;
@@ -32,8 +40,10 @@ public class Ball : MonoBehaviour
     } 
     
     private void LaunchBall(){
-        int randomX = Random.Range(0, 2) == 0 ? -1 : 1;
-        int randomY = Random.Range(-1, 2);
+        OnBallRestart?.Invoke(this, EventArgs.Empty);
+
+        int randomX = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
+        int randomY = UnityEngine.Random.Range(-1, 2);
         moveDirection = new Vector2 (randomX, randomY);
     }
 
@@ -71,6 +81,11 @@ public class Ball : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
+        OnBallCollision?.Invoke(this, new OnBallCollisionEventArgs {
+            collisionPoint = collision.GetContact(0).point,
+            moveDirection = this.moveDirection
+        });
+
         if(collision.gameObject.TryGetComponent<Player>(out Player player) ||
         collision.gameObject.TryGetComponent<AIPlayer>(out AIPlayer AIplayer)){
             PlayerBounceBall(collision.transform);
@@ -83,8 +98,8 @@ public class Ball : MonoBehaviour
         moveDirection = Vector2.zero;
         rb.velocity = Vector2.zero;
         transform.position = initialPosition;
-        incrementSpeedMultiplier = 0;
+        hitCounter = 0;
 
-        Invoke(LAUNCH_BALL_STRING, 2f);
+        Invoke(LAUNCH_BALL_STRING, 3f);        
     }
 }
