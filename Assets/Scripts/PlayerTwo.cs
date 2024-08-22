@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIPlayer : MonoBehaviour{
+public class PlayerTwo : MonoBehaviour{
+
+    private const string PLAYER_TWO_AXIS_RAW_VERTICAL = "VerticalTwo";
+    [SerializeField] private bool isPlayerController;
 
     [SerializeField] private float speed;
     [SerializeField] private Ball ball;
@@ -14,7 +17,23 @@ public class AIPlayer : MonoBehaviour{
         rb = GetComponent<Rigidbody2D>();
     }
 
+    private void Start(){
+        isPlayerController = SavedDataManager.isPlayerController;
+    }
+
     private void Update(){
+        if(isPlayerController){
+            GetMoveDirection();
+        } else {
+            GetAIMoveDirection();
+        }
+    }
+
+    private void FixedUpdate(){
+        rb.velocity = moveDirection * speed;
+    }
+
+    private void GetAIMoveDirection(){
         float moveY;
 
         if(transform.position.y + deadZone > ball.transform.position.y ){
@@ -28,7 +47,7 @@ public class AIPlayer : MonoBehaviour{
         moveDirection = new Vector2 (0, moveY);
     }
 
-    private void FixedUpdate(){
-        rb.velocity = moveDirection * speed;
+    private void GetMoveDirection(){
+        moveDirection = new Vector2(0, Input.GetAxisRaw(PLAYER_TWO_AXIS_RAW_VERTICAL));
     }
 }

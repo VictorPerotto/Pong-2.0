@@ -11,6 +11,11 @@ public class PauseUI : MonoBehaviour{
     [SerializeField] private Button restartButton;
     [SerializeField] private Button mainMenuButton;
 
+    [SerializeField] private Material RGBMaterial;
+    private float shaderTime;
+
+    private bool isGamePaused;
+
     private void Awake(){
         resumeButton.onClick.AddListener(() => {
             GameManager.Instance.TogglePauseGame();
@@ -31,11 +36,23 @@ public class PauseUI : MonoBehaviour{
     }
 
     private void GameManager_OnGamePaused(object sender, EventArgs e){
+        isGamePaused = true;
         Show();
     }
     
     private void GameManager_OnGameUnpaused(object sender, EventArgs e){
+        isGamePaused = false;
         Hide();
+    }
+
+    private void Update(){
+        if(isGamePaused){
+            Debug.Log(shaderTime);
+            shaderTime += 0.01f;
+            RGBMaterial.SetFloat("_ShaderTime", shaderTime);
+        } else {
+            shaderTime = 0;
+        }
     }
 
     private void Show(){

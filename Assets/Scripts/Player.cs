@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour{
 
-    private const string PLAYER_AXIS_RAW_VERTICAL = "Vertical";
+    private const string PLAYER_ONE_AXIS_RAW_VERTICAL = "VerticalOne";
 
     private Rigidbody2D rb;
 
@@ -26,7 +26,7 @@ public class Player : MonoBehaviour{
     }
 
     private void GetMoveDirection(){
-        moveDirection = new Vector2(0, Input.GetAxisRaw(PLAYER_AXIS_RAW_VERTICAL));
+        moveDirection = new Vector2(0, Input.GetAxisRaw(PLAYER_ONE_AXIS_RAW_VERTICAL));
     }
 
     private void Move(){

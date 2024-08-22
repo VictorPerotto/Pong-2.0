@@ -87,7 +87,7 @@ public class Ball : MonoBehaviour
         });
 
         if(collision.gameObject.TryGetComponent<Player>(out Player player) ||
-        collision.gameObject.TryGetComponent<AIPlayer>(out AIPlayer AIplayer)){
+        collision.gameObject.TryGetComponent<PlayerTwo>(out PlayerTwo playerTwo)){
             PlayerBounceBall(collision.transform);
         } else {
             WallBounceBall(collision.transform);
