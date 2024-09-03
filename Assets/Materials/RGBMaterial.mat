@@ -68,7 +68,7 @@ Material:
     m_Floats:
     - _EnableExternalAlpha: 0
     - _Intensity: 1
-    - _ShaderTime: 8.450098
+    - _ShaderTime: 0.90999943
     - _Speed: 2
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

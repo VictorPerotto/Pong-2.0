@@ -6,6 +6,7 @@ public class ScoreManager : MonoBehaviour{
 
     public static ScoreManager Instance {get; private set;}
     
+    [SerializeField] private int scoreToFinish;
     private int playerOneScore;
     private int playerTwoScore;
 
@@ -24,6 +25,16 @@ public class ScoreManager : MonoBehaviour{
             playerOneScore ++;
         } else {
             playerTwoScore ++;
+        }
+
+        CheckScore();
+    }
+
+    private void CheckScore(){
+        if(playerOneScore >= scoreToFinish){
+            GameManager.Instance.FinishGame("PLAYER 1 WINS");
+        } else if(playerTwoScore >= scoreToFinish){
+            GameManager.Instance.FinishGame("PLAYER 2 WINS");
         }
     }
 
