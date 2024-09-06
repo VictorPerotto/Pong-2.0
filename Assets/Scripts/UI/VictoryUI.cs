@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -30,14 +31,27 @@ public class VictoryUI : MonoBehaviour
         Hide();
     }
 
-    public void Show(string victoryText){
+    private void Start(){
+        GameManager.OnAnyPlayerWin += GameManager_OnAnyPlayerWin;
+    }
+
+    private void GameManager_OnAnyPlayerWin(object sender, EventArgs e){
+        Debug.Log("Victory UI");
+        if(ScoreManager.Instance.GetPlayerOneScore() > ScoreManager.Instance.GetPlayerTwoScore()){
+            Show("PLAYER 1 WINS");
+        } else {
+            Show("PLAYER 2 WINS");
+        }
+    }
+
+    private void Show(string victoryText){
         this.victoryText.SetText(victoryText);
         canvasGroup.alpha = 1f;
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
     }
 
-    public void Hide(){
+    private void Hide(){
         canvasGroup.alpha = 0f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;

@@ -32,9 +32,9 @@ public class ScoreManager : MonoBehaviour{
 
     private void CheckScore(){
         if(playerOneScore >= scoreToFinish){
-            GameManager.Instance.FinishGame("PLAYER 1 WINS");
+            GameManager.Instance.StartEndGameSequence();
         } else if(playerTwoScore >= scoreToFinish){
-            GameManager.Instance.FinishGame("PLAYER 2 WINS");
+            GameManager.Instance.StartEndGameSequence();
         }
     }
 

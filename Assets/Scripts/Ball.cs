@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public static event EventHandler OnAnyCollision;
+
+    public static void ResetStaticData(){
+        OnAnyCollision = null;
+    }
+
     public event EventHandler OnBallRestart;
     public event EventHandler<OnBallCollisionEventArgs> OnBallCollision;
     public class OnBallCollisionEventArgs : EventArgs{
@@ -81,6 +87,8 @@ public class Ball : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
+        OnAnyCollision?.Invoke(this, EventArgs.Empty);
+        
         OnBallCollision?.Invoke(this, new OnBallCollisionEventArgs {
             collisionPoint = collision.GetContact(0).point,
             moveDirection = this.moveDirection
