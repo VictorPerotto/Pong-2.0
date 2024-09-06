@@ -21,13 +21,16 @@ public class Ball : MonoBehaviour
 
     private const string LAUNCH_BALL_STRING = "LaunchBall";
 
-    [SerializeField] private float speed;
     [SerializeField] private float incrementSpeedMultiplier;
-    private float hitCounter;
-    private Vector2 moveDirection;
+    [SerializeField] private float initialSpeed;
+    [SerializeField] private float maxSpeed;
     private Vector3 initialPosition;
-    private Rigidbody2D rb;
+    private Vector2 moveDirection;
+    private float hitCounter;
+    private float speed;
 
+    private Rigidbody2D rb;
+    
     private void Awake(){
         initialPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
@@ -38,11 +41,7 @@ public class Ball : MonoBehaviour
     }
 
     private void FixedUpdate(){
-        float baseMultiplier = 1;
-        float moveX = moveDirection.x * speed * (baseMultiplier + hitCounter);
-        float moveY = moveDirection.y * speed * (baseMultiplier + hitCounter);
-
-        rb.velocity = new Vector2(moveX, moveY);
+        
     } 
     
     private void LaunchBall(){
@@ -50,40 +49,40 @@ public class Ball : MonoBehaviour
 
         int randomX = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
         int randomY = UnityEngine.Random.Range(-1, 2);
-        moveDirection = new Vector2 (randomX, randomY);
+
+        MoveBall(new Vector2(randomX, randomY));
     }
 
-    private void PlayerBounceBall(Transform playerTransform){
+    private void MoveBall(Vector2 direction){
+        moveDirection = direction.normalized;
 
+        speed = initialSpeed + hitCounter * incrementSpeedMultiplier;
+
+        rb.velocity = moveDirection * speed;
+    }
+
+    private void PlayerBounceBall(Collision2D collision){
+        Debug.Log("Player bounce");
         float moveX;
-        float moveY;
-
-        if(transform.position.x < playerTransform.position.x ){
+        if(transform.position.x < collision.transform.position.x ){
             moveX = -1;
         } else {
             moveX = 1;
         }
 
-        if(transform.position.y > playerTransform.position.y){
-            moveY = 1;
-        } else {
-            moveY = -1;
-        }
-         
+        Vector3 ballPosition = transform.position;
+        Vector3 paddlePosition = collision.transform.position;
+        float paddleHeight = collision.collider.bounds.size.y;
+ 
+        float moveY = (ballPosition.y - paddlePosition.y)/ paddleHeight;
+
         moveDirection = new Vector2(moveX, moveY);
-        hitCounter += incrementSpeedMultiplier;
-    }
 
-    private void WallBounceBall(Transform wallTransform){
-        float moveY;
-
-        if(transform.position.y < wallTransform.position.y){
-            moveY = -1;
-        } else {
-            moveY = 1;
+        if(speed < maxSpeed){
+            hitCounter ++;
         }
-
-        moveDirection = new Vector2(moveDirection.x, moveY);
+        
+        MoveBall(moveDirection);
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
@@ -96,10 +95,8 @@ public class Ball : MonoBehaviour
 
         if(collision.gameObject.TryGetComponent<Player>(out Player player) ||
         collision.gameObject.TryGetComponent<PlayerTwo>(out PlayerTwo playerTwo)){
-            PlayerBounceBall(collision.transform);
-        } else {
-            WallBounceBall(collision.transform);
-        }
+            PlayerBounceBall(collision);
+        } 
     }
 
     public void RestartBall(){

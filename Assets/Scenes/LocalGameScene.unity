@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85df216ca2d3c854e9322306b2ce2690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 7
 --- !u!50 &395060202
 Rigidbody2D:
   serializedVersion: 4
@@ -714,7 +714,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 5
 --- !u!61 &395060203
 BoxCollider2D:
@@ -2412,7 +2412,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 5
 --- !u!61 &1165423349
 BoxCollider2D:
@@ -2488,9 +2488,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerController: 0
-  speed: 5
+  speed: 7
   ball: {fileID: 2055669676}
-  deadZone: 0.5
+  deadZone: 1
 --- !u!1 &1248742644
 GameObject:
   m_ObjectHideFlags: 0
@@ -4337,8 +4337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d8b48b79b3a7f94898d81295aa1d8c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  incrementSpeedMultiplier: 0.025
+  incrementSpeedMultiplier: 0.5
+  initialSpeed: 7
+  maxSpeed: 15
 --- !u!58 &2055669677
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -4348,7 +4349,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 2055669675}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 2aee762b9cb1a954797441ff77b3352e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4400,7 +4401,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 2055669675}
   m_BodyType: 0
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -4415,7 +4416,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!1 &2084019296
 GameObject:

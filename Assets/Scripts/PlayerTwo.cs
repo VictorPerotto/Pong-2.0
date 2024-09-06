@@ -10,6 +10,7 @@ public class PlayerTwo : MonoBehaviour{
     [SerializeField] private float speed;
     [SerializeField] private Ball ball;
     [SerializeField] private float deadZone;
+    private float currentY;
     private Vector2 moveDirection;
     private Rigidbody2D rb;
 
@@ -26,6 +27,7 @@ public class PlayerTwo : MonoBehaviour{
             GetMoveDirection();
         } else {
             GetAIMoveDirection();
+            MoveAI();
         }
     }
 
@@ -34,17 +36,25 @@ public class PlayerTwo : MonoBehaviour{
     }
 
     private void GetAIMoveDirection(){
-        float moveY;
-
-        if(transform.position.y + deadZone > ball.transform.position.y ){
-            moveY = -1;    
-        } else if(transform.position.y - deadZone < ball.transform.position.y) {
-            moveY = 1;
-        } else {
-            moveY = 0;
+        float targetY = ball.transform.position.y;
+    
+        if (Mathf.Abs(transform.position.y - targetY) <= deadZone){
+            currentY = transform.position.y;  
+            return;
         }
+        
+        if (transform.position.y + deadZone > targetY){
+            currentY = Mathf.Lerp(transform.position.y, targetY - deadZone, Time.deltaTime * speed);
+        }
+        
+        else if (transform.position.y - deadZone < targetY){
+            currentY = Mathf.Lerp(transform.position.y, targetY + deadZone, Time.deltaTime * speed);
+        }
+    }
 
-        moveDirection = new Vector2 (0, moveY);
+    private void MoveAI(){
+        Vector2 targetPosition = new Vector2(transform.position.x, currentY);
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
     }
 
     private void GetMoveDirection(){
