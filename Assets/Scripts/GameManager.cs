@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour{
     }
 
     private void Update(){
-        if(Input.GetKeyDown(KeyCode.Escape) && !isGameEnding){
+        if(Input.GetKeyDown(KeyCode.P) && !isGameEnding){
             TogglePauseGame();
         }
 

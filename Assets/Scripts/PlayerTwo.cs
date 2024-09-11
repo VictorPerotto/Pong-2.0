@@ -7,9 +7,10 @@ public class PlayerTwo : MonoBehaviour{
     private const string PLAYER_TWO_AXIS_RAW_VERTICAL = "VerticalTwo";
     [SerializeField] private bool isPlayerController;
 
-    [SerializeField] private float speed;
-    [SerializeField] private Ball ball;
+    [SerializeField] private float playerSpeed;
     [SerializeField] private float deadZone;
+    [SerializeField] private float AISpeed;
+    [SerializeField] private Ball ball;
     private float currentY;
     private Vector2 moveDirection;
     private Rigidbody2D rb;
@@ -32,7 +33,7 @@ public class PlayerTwo : MonoBehaviour{
     }
 
     private void FixedUpdate(){
-        rb.velocity = moveDirection * speed;
+        rb.velocity = moveDirection * playerSpeed;
     }
 
     private void GetAIMoveDirection(){
@@ -44,17 +45,17 @@ public class PlayerTwo : MonoBehaviour{
         }
         
         if (transform.position.y + deadZone > targetY){
-            currentY = Mathf.Lerp(transform.position.y, targetY - deadZone, Time.deltaTime * speed);
+            currentY = Mathf.Lerp(transform.position.y, targetY - deadZone, Time.deltaTime * AISpeed);
         }
         
         else if (transform.position.y - deadZone < targetY){
-            currentY = Mathf.Lerp(transform.position.y, targetY + deadZone, Time.deltaTime * speed);
+            currentY = Mathf.Lerp(transform.position.y, targetY + deadZone, Time.deltaTime * AISpeed);
         }
     }
 
     private void MoveAI(){
         Vector2 targetPosition = new Vector2(transform.position.x, currentY);
-        transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, AISpeed * Time.deltaTime);
     }
 
     private void GetMoveDirection(){

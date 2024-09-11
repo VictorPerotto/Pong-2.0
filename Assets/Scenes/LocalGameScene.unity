@@ -2488,9 +2488,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerController: 0
-  speed: 7
-  ball: {fileID: 2055669676}
+  playerSpeed: 7
   deadZone: 1
+  AISpeed: 4
+  ball: {fileID: 2055669676}
 --- !u!1 &1248742644
 GameObject:
   m_ObjectHideFlags: 0
@@ -3090,6 +3091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ball: {fileID: 2055669676}
+  ballMaterial: {fileID: 2100000, guid: 6d7dd776e68df8e45bfffca2c7cae409, type: 2}
   trailRenderer: {fileID: 1338341123}
   bounceParticles: {fileID: 7408110677059866746, guid: c4be4b41a689cb148be22926ecba064d, type: 3}
   goalParticles: {fileID: 7408110677059866746, guid: e19ca67d75b6a7745a0c8889d1c4f993, type: 3}

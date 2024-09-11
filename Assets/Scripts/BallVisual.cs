@@ -8,6 +8,7 @@ public class BallVisual : MonoBehaviour{
     private const string BOUNCE_BALL_ANIMATION = "BallBounce";
     
     [SerializeField] private Ball ball;
+    [SerializeField] private Material ballMaterial;
     [SerializeField] private TrailRenderer trailRenderer;
     [SerializeField] private ParticleSystem bounceParticles;
     [SerializeField] private ParticleSystem goalParticles;

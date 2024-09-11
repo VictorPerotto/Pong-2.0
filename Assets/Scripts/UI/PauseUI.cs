@@ -47,7 +47,6 @@ public class PauseUI : MonoBehaviour{
 
     private void Update(){
         if(isGamePaused){
-            Debug.Log(shaderTime);
             shaderTime += 0.01f;
             RGBMaterial.SetFloat("_ShaderTime", shaderTime);
         } else {
