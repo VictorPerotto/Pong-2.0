@@ -62,7 +62,6 @@ public class Ball : MonoBehaviour
     }
 
     private void PlayerBounceBall(Collision2D collision){
-        Debug.Log("Player bounce");
         float moveX;
         if(transform.position.x < collision.transform.position.x ){
             moveX = -1;

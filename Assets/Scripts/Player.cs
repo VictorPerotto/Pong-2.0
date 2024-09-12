@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Player : MonoBehaviour{
+public class Player : NetworkBehaviour{
 
     private const string PLAYER_ONE_AXIS_RAW_VERTICAL = "VerticalOne";
 
