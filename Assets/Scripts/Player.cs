@@ -12,14 +12,21 @@ public class Player : NetworkBehaviour{
     private Rigidbody2D rb;
 
     [SerializeField] private float speed;
+    [SerializeField] private List<Vector3> spawnPositions;
     private Vector2 moveDirection;
 
     private void Awake(){
         rb = GetComponent<Rigidbody2D>();
     }
 
+    public override void OnNetworkSpawn(){
+        transform.position = spawnPositions[(int)OwnerClientId];
+    }
+
     private void Update(){
-        GetMoveDirection();
+        if(IsOwner){
+            GetMoveDirection();
+        }
     }
 
     private void FixedUpdate(){
