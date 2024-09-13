@@ -3,8 +3,9 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using System.IO.IsolatedStorage;
+using Unity.Netcode;
 
-public class GameManager : MonoBehaviour{
+public class GameManager : NetworkBehaviour{
 
     public static GameManager Instance {get; private set;}
 
@@ -33,12 +34,26 @@ public class GameManager : MonoBehaviour{
     private float slowMotionDuration;
     private GameEndState gameEndState;
 
+    [SerializeField] private NetworkObject ballPrefab;
+
     private void Awake(){
-        if(Instance == null){
+        if(Instance != null && Instance != this){
+            Destroy(gameObject);
+        } else {
             Instance = this;
         }
 
         slowMotionDuration = slowMotionDurationMax;
+    }
+
+    private void Start(){
+        NetworkManager.OnClientConnectedCallback += OnClientConnected;
+    }
+
+    private void OnClientConnected(ulong clientId){
+        if(!IsServer){
+            SpawnBall();
+        }
     }
 
     private void Update(){
@@ -96,5 +111,16 @@ public class GameManager : MonoBehaviour{
     public void StartEndGameSequence(){
         gameEndState = GameEndState.SlowMotion;
         isGameEnding = true;
+    }
+
+    public void SpawnBall(){
+        SpawnBallServerRpc();
+        Debug.Log("Spawn");
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnBallServerRpc(){
+        GameObject instantiadeBall = Instantiate(ballPrefab.gameObject, Vector3.zero, Quaternion.identity);
+        instantiadeBall.GetComponent<NetworkObject>().Spawn(true);
     }
 }
