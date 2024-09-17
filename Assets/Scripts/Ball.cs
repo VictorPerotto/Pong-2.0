@@ -1,23 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+public class Ball : NetworkBehaviour
 {
-    public static event EventHandler OnAnyCollision;
+    public static event EventHandler<OnBallCollisionEventArgs> OnAnyCollision;
+    public class OnBallCollisionEventArgs : EventArgs{
+        public Vector2 collisionPoint;
+        public Vector2 moveDirection;
+    }
 
     public static void ResetStaticData(){
         OnAnyCollision = null;
     }
 
     public event EventHandler OnBallRestart;
-    public event EventHandler<OnBallCollisionEventArgs> OnBallCollision;
-    public class OnBallCollisionEventArgs : EventArgs{
-        public Vector2 collisionPoint;
-        public Vector2 moveDirection;
-    }
+    
 
     private const string LAUNCH_BALL_STRING = "LaunchBall";
 
@@ -85,17 +86,17 @@ public class Ball : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision){
-        OnAnyCollision?.Invoke(this, EventArgs.Empty);
-        
-        OnBallCollision?.Invoke(this, new OnBallCollisionEventArgs {
+        if(IsServer){
+            OnAnyCollision?.Invoke(this, new OnBallCollisionEventArgs {
             collisionPoint = collision.GetContact(0).point,
             moveDirection = this.moveDirection
         });
 
         if(collision.gameObject.TryGetComponent<Player>(out Player player) ||
         collision.gameObject.TryGetComponent<PlayerTwo>(out PlayerTwo playerTwo)){
-            PlayerBounceBall(collision);
-        } 
+                PlayerBounceBall(collision);
+            } 
+        }
     }
 
     public void RestartBall(){
