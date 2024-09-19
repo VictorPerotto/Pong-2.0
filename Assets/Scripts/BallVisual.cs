@@ -46,6 +46,7 @@ public class BallVisual : NetworkBehaviour{
     [ClientRpc]
     private void SpawnGoalParticlesClientRpc(){
         SpawnParticles(goalParticles, gameObject.transform.position, new Vector2(0,0));
+        ScreenShake.Instance.ShakeCamera(.5f, .3f, 1f);
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class ScoreUI : MonoBehaviour{
+public class ScoreUI : NetworkBehaviour{
     private const string SCORED = "Scored";
 
     private Animator playerOneAnimatorController;
@@ -17,18 +18,19 @@ public class ScoreUI : MonoBehaviour{
         playerOneAnimatorController = playerOneScoreText.gameObject.GetComponent<Animator>();
         playerTwoAnimatorController = playerTwoScoreText.gameObject.GetComponent<Animator>();
     }
+    
     private void Start(){
-        Goal.OnAnyPlayerScored += Goal_OnAnyPlayerScored;
+        ScoreManager.OnPlayer1Scored += ScoreManager_OnPlayer1Scored;
+        ScoreManager.OnPlayer2Scored += ScoreManager_OnPlayer2Scored;
     }
 
-    private void Goal_OnAnyPlayerScored(object sender, Goal.OnPlayerScoredEventArgs e){
-        if(e.playerOneScored){
-            playerOneScoreText.SetText(ScoreManager.Instance.GetPlayerOneScore().ToString());
-            playerOneAnimatorController.SetTrigger(SCORED);
+    private void ScoreManager_OnPlayer1Scored(object sender, ScoreManager.OnScoreChangedEventArgs e){
+        playerOneScoreText.SetText(e.score.ToString());
+        playerOneAnimatorController.SetTrigger(SCORED);
+    }
 
-        } else {
-            playerTwoScoreText.SetText(ScoreManager.Instance.GetPlayerTwoScore().ToString());
-            playerTwoAnimatorController.SetTrigger(SCORED);
-        }
+    private void ScoreManager_OnPlayer2Scored(object sender, ScoreManager.OnScoreChangedEventArgs e){
+        playerTwoScoreText.SetText(e.score.ToString());
+        playerTwoAnimatorController.SetTrigger(SCORED);
     }
 }

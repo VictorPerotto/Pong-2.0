@@ -1,19 +1,35 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ScoreManager : MonoBehaviour{
+public class ScoreManager : NetworkBehaviour{
 
     public static ScoreManager Instance {get; private set;}
     
     [SerializeField] private int scoreToFinish;
-    private int playerOneScore;
-    private int playerTwoScore;
+    private NetworkVariable<int> playerOneScore = new NetworkVariable<int>();
+    private NetworkVariable<int> playerTwoScore = new NetworkVariable<int>();
 
-    private void Awake(){
-        if(Instance == null){
-            Instance = this;
-        }
+    public static event EventHandler<OnScoreChangedEventArgs> OnPlayer1Scored;
+    public static event EventHandler<OnScoreChangedEventArgs> OnPlayer2Scored;
+
+    public class OnScoreChangedEventArgs : EventArgs{
+        public int score;
+    }
+
+    public override void OnNetworkSpawn(){
+        playerOneScore.OnValueChanged += OnPlayer1ScoredMethod;
+        playerTwoScore.OnValueChanged += OnPlayer2ScoredMethod;
+    }
+
+    private void OnPlayer1ScoredMethod(int oldValue, int newValue){
+        OnPlayer1Scored?.Invoke(this, new OnScoreChangedEventArgs {score = playerOneScore.Value});
+    }
+
+    private void OnPlayer2ScoredMethod(int oldValue, int newValue){
+        OnPlayer2Scored?.Invoke(this, new OnScoreChangedEventArgs {score = playerTwoScore.Value});
     }
 
     private void Start(){
@@ -21,28 +37,20 @@ public class ScoreManager : MonoBehaviour{
     }
 
     private void Goal_OnAnyPlayerScored(object sender, Goal.OnPlayerScoredEventArgs e){
-        if(e.playerOneScored){
-            playerOneScore ++;
-        } else {
-            playerTwoScore ++;
-        }
+        if(IsServer){
+            if(e.playerOneScored){
+                playerOneScore.Value ++;
+            } else {
+                playerTwoScore.Value ++;
+            }
 
-        CheckScore();
+            CheckScore();
+        }
     }
 
     private void CheckScore(){
-        if(playerOneScore >= scoreToFinish){
-            GameManager.Instance.StartEndGameSequence();
-        } else if(playerTwoScore >= scoreToFinish){
+        if(playerOneScore.Value >= scoreToFinish || playerTwoScore.Value >= scoreToFinish){
             GameManager.Instance.StartEndGameSequence();
         }
-    }
-
-    public int GetPlayerOneScore(){
-        return playerOneScore;
-    }
-
-    public int GetPlayerTwoScore(){
-        return playerTwoScore;
     }
 }

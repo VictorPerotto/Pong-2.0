@@ -22,7 +22,6 @@ public class SoundManager : MonoBehaviour{
     private void Start(){
         Ball.OnAnyCollision += Ball_OnAnyCollision;
         Goal.OnAnyPlayerScored += Goal_OnAnyPlayerScored;
-        GameManager.OnAnyPlayerWin += GameManager_OnAnyPlayerWin;
     }
 
     public void PlaySound(AudioClip audioClip, Vector3 position, float volumeMultiplier = 1f){
@@ -35,9 +34,5 @@ public class SoundManager : MonoBehaviour{
 
     private void Goal_OnAnyPlayerScored(object sender, EventArgs e){
         PlaySound(goal, Camera.main.transform.position , volume);
-    }
-
-    private void GameManager_OnAnyPlayerWin(object sender, EventArgs e){
-        PlaySound(victory, Camera.main.transform.position , 0.7f);
     }
 }

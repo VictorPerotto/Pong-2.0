@@ -11,12 +11,6 @@ public class GameManager : NetworkBehaviour{
 
     private const string MAIN_MENU_SCENE_NAME = "MainMenuScene";
 
-    public static event EventHandler OnAnyPlayerWin; 
-
-    public static void ResetStaticData(){
-        OnAnyPlayerWin = null;
-    }
-
     public event EventHandler OnGamePaused;
     public event EventHandler OnGameUnpaused;
 
@@ -95,7 +89,6 @@ public class GameManager : NetworkBehaviour{
                     slowMotionDuration -= Time.fixedDeltaTime;
                     Time.timeScale = slowMotionFactor;
                 } else {
-                    OnAnyPlayerWin?.Invoke(this, EventArgs.Empty);
                     slowMotionDuration = slowMotionDurationMax;
                     gameEndState = GameEndState.VictoryScreen;
                 }

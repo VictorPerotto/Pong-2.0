@@ -32,15 +32,6 @@ public class VictoryUI : MonoBehaviour
     }
 
     private void Start(){
-        GameManager.OnAnyPlayerWin += GameManager_OnAnyPlayerWin;
-    }
-
-    private void GameManager_OnAnyPlayerWin(object sender, EventArgs e){
-        if(ScoreManager.Instance.GetPlayerOneScore() > ScoreManager.Instance.GetPlayerTwoScore()){
-            Show("PLAYER 1 WINS");
-        } else {
-            Show("PLAYER 2 WINS");
-        }
     }
 
     private void Show(string victoryText){
