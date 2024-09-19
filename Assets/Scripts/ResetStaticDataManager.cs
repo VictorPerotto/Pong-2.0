@@ -7,5 +7,7 @@ public class ResetStaticDataManager : MonoBehaviour{
     private void Awake(){
         Goal.ResetStaticData();
         Ball.ResetStaticData();
+        ScoreManager.ResetStaticData();
+        GameManager.ResetStaticData();
     }
 }

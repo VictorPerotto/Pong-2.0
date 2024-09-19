@@ -20,8 +20,8 @@ public class ScoreUI : NetworkBehaviour{
     }
     
     private void Start(){
-        ScoreManager.OnPlayer1Scored += ScoreManager_OnPlayer1Scored;
-        ScoreManager.OnPlayer2Scored += ScoreManager_OnPlayer2Scored;
+        ScoreManager.OnPlayerOneScored += ScoreManager_OnPlayer1Scored;
+        ScoreManager.OnPlayerTwoScored += ScoreManager_OnPlayer2Scored;
     }
 
     private void ScoreManager_OnPlayer1Scored(object sender, ScoreManager.OnScoreChangedEventArgs e){

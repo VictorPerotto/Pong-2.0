@@ -601,7 +601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d39bff27089cee74799d3528bcf64677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreToFinish: 1
+  scoreToFinish: 5
 --- !u!4 &453308194
 Transform:
   m_ObjectHideFlags: 0
@@ -2345,7 +2345,6 @@ GameObject:
   - component: {fileID: 1257803739}
   - component: {fileID: 1257803738}
   - component: {fileID: 1257803740}
-  - component: {fileID: 1257803741}
   m_Layer: 5
   m_Name: PlayerOneScoreText
   m_TagString: Untagged
@@ -2490,27 +2489,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1257803741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1257803736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 1619415391
-    DestinationState: 1230814207
-    TransitionDuration: 0
-    TriggerNameHash: -2094024785
-    TransitionIndex: 0
-  m_Animator: {fileID: 1257803740}
 --- !u!1 &1334133541
 GameObject:
   m_ObjectHideFlags: 0
@@ -3104,7 +3082,6 @@ GameObject:
   - component: {fileID: 1977241111}
   - component: {fileID: 1977241110}
   - component: {fileID: 1977241112}
-  - component: {fileID: 1977241113}
   m_Layer: 5
   m_Name: PlayerTwoScoredText
   m_TagString: Untagged
@@ -3249,27 +3226,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1977241113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1977241108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 1619415391
-    DestinationState: 1230814207
-    TransitionDuration: 0
-    TriggerNameHash: -2094024785
-    TransitionIndex: 0
-  m_Animator: {fileID: 1977241112}
 --- !u!1001 &2013162835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3677,8 +3633,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2087937918}
-  - component: {fileID: 2087937919}
   - component: {fileID: 2087937920}
+  - component: {fileID: 2087937919}
   m_Layer: 5
   m_Name: ScoreUI
   m_TagString: Untagged

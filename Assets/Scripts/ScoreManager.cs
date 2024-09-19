@@ -9,27 +9,38 @@ public class ScoreManager : NetworkBehaviour{
     public static ScoreManager Instance {get; private set;}
     
     [SerializeField] private int scoreToFinish;
-    private NetworkVariable<int> playerOneScore = new NetworkVariable<int>();
-    private NetworkVariable<int> playerTwoScore = new NetworkVariable<int>();
+    private int playerOneScore;
+    private int playerTwoScore;
 
-    public static event EventHandler<OnScoreChangedEventArgs> OnPlayer1Scored;
-    public static event EventHandler<OnScoreChangedEventArgs> OnPlayer2Scored;
+    public static event EventHandler<OnScoreChangedEventArgs> OnPlayerOneScored;
+    public static event EventHandler<OnScoreChangedEventArgs> OnPlayerTwoScored;
+
+    public static event EventHandler<OnAnyPlayerWinsEventArgs> OnAnyPlayerWins;
+
+    public class OnAnyPlayerWinsEventArgs : EventArgs{
+        public int victoryPlayer;
+    }
 
     public class OnScoreChangedEventArgs : EventArgs{
         public int score;
     }
 
-    public override void OnNetworkSpawn(){
-        playerOneScore.OnValueChanged += OnPlayer1ScoredMethod;
-        playerTwoScore.OnValueChanged += OnPlayer2ScoredMethod;
+    public static void ResetStaticData(){
+        OnPlayerOneScored = null;
+        OnPlayerTwoScored = null;
+        OnAnyPlayerWins = null;
     }
 
-    private void OnPlayer1ScoredMethod(int oldValue, int newValue){
-        OnPlayer1Scored?.Invoke(this, new OnScoreChangedEventArgs {score = playerOneScore.Value});
+    [ClientRpc]
+    private void OnPlayerOneScoredClientRpc(){
+        playerOneScore ++;
+        OnPlayerOneScored?.Invoke(this, new OnScoreChangedEventArgs {score = playerOneScore});
     }
 
-    private void OnPlayer2ScoredMethod(int oldValue, int newValue){
-        OnPlayer2Scored?.Invoke(this, new OnScoreChangedEventArgs {score = playerTwoScore.Value});
+    [ClientRpc]
+    private void OnPlayerTwoScoredClientRpc(){
+        playerTwoScore ++;
+        OnPlayerTwoScored?.Invoke(this, new OnScoreChangedEventArgs {score = playerTwoScore});
     }
 
     private void Start(){
@@ -39,18 +50,21 @@ public class ScoreManager : NetworkBehaviour{
     private void Goal_OnAnyPlayerScored(object sender, Goal.OnPlayerScoredEventArgs e){
         if(IsServer){
             if(e.playerOneScored){
-                playerOneScore.Value ++;
+                OnPlayerOneScoredClientRpc();
             } else {
-                playerTwoScore.Value ++;
+                OnPlayerTwoScoredClientRpc();
             }
-
-            CheckScore();
         }
-    }
 
-    private void CheckScore(){
-        if(playerOneScore.Value >= scoreToFinish || playerTwoScore.Value >= scoreToFinish){
-            GameManager.Instance.StartEndGameSequence();
+        CheckScoreClientRpc();
+    }
+    
+    [ClientRpc]
+    private void CheckScoreClientRpc(){
+        if(playerOneScore >= scoreToFinish){
+            OnAnyPlayerWins?.Invoke(this, new OnAnyPlayerWinsEventArgs {victoryPlayer = 1});
+        } else if(playerTwoScore >= scoreToFinish) {
+            OnAnyPlayerWins?.Invoke(this, new OnAnyPlayerWinsEventArgs {victoryPlayer = 2});
         }
     }
 }

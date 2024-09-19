@@ -4,13 +4,12 @@ using System;
 using UnityEngine.UI;
 using System.IO.IsolatedStorage;
 using Unity.Netcode;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : NetworkBehaviour{
-
-    public static GameManager Instance {get; private set;}
-
     private const string MAIN_MENU_SCENE_NAME = "MainMenuScene";
 
+    public static event EventHandler OnAnyPlayerWins;
     public event EventHandler OnGamePaused;
     public event EventHandler OnGameUnpaused;
 
@@ -24,24 +23,23 @@ public class GameManager : NetworkBehaviour{
     }
 
     [SerializeField] private float slowMotionFactor = 0.2f;
-    [SerializeField] private float slowMotionDurationMax = 2f;
+    [SerializeField] private float slowMotionDurationMax = 1f;
     private float slowMotionDuration;
     private GameEndState gameEndState;
 
     [SerializeField] private NetworkObject ballPrefab;
 
-    private void Awake(){
-        if(Instance != null && Instance != this){
-            Destroy(gameObject);
-        } else {
-            Instance = this;
-        }
+    public static void ResetStaticData(){
+        OnAnyPlayerWins = null;
+    }
 
+    private void Awake(){
         slowMotionDuration = slowMotionDurationMax;
     }
 
     private void Start(){
         NetworkManager.OnClientConnectedCallback += OnClientConnected;
+        ScoreManager.OnAnyPlayerWins += ScoreManager_OnAnyPlayerWins;
     }
 
     private void OnClientConnected(ulong clientId){
@@ -72,14 +70,24 @@ public class GameManager : NetworkBehaviour{
         }
     }
 
-    public void RestartGame(){
+    public static void RestartGame(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale = 1f;
     }
 
-    public void GoToMainMenu(){
+    public static void GoToMainMenu(){
         SceneManager.LoadScene(MAIN_MENU_SCENE_NAME);
         Time.timeScale = 1f;
+    }
+
+    private void ScoreManager_OnAnyPlayerWins(object sender, ScoreManager.OnAnyPlayerWinsEventArgs e){
+        StardEndGameSequenceClientRpc();
+    }
+
+    [ClientRpc]
+    private void StardEndGameSequenceClientRpc(){
+        gameEndState = GameEndState.SlowMotion;
+        isGameEnding = true;
     }
 
     private void EndGameSequence(){
@@ -96,14 +104,10 @@ public class GameManager : NetworkBehaviour{
 
             case GameEndState.VictoryScreen:
                 isGameEnding = false;
+                OnAnyPlayerWins?.Invoke(this, EventArgs.Empty);
                 Time.timeScale = 0;
             break;
         }
-    }
-
-    public void StartEndGameSequence(){
-        gameEndState = GameEndState.SlowMotion;
-        isGameEnding = true;
     }
 
     public void SpawnBall(){
