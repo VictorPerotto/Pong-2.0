@@ -5,13 +5,12 @@ using UnityEngine.UI;
 using System.IO.IsolatedStorage;
 using Unity.Netcode;
 using UnityEngine.SocialPlatforms.Impl;
+using System.Collections.Generic;
 
 public class GameManager : NetworkBehaviour{
     private const string MAIN_MENU_SCENE_NAME = "MainMenuScene";
 
     public static event EventHandler OnAnyPlayerWins;
-    public event EventHandler OnGamePaused;
-    public event EventHandler OnGameUnpaused;
 
     private bool gameIsPaused;
     private bool isGameEnding;
@@ -22,6 +21,7 @@ public class GameManager : NetworkBehaviour{
         VictoryScreen,
     }
 
+    [SerializeField] private Transform playerPrefab;
     [SerializeField] private float slowMotionFactor = 0.2f;
     [SerializeField] private float slowMotionDurationMax = 1f;
     private float slowMotionDuration;
@@ -37,36 +37,30 @@ public class GameManager : NetworkBehaviour{
         slowMotionDuration = slowMotionDurationMax;
     }
 
-    private void Start(){
-        NetworkManager.OnClientConnectedCallback += OnClientConnected;
+    public override void OnNetworkSpawn(){
         ScoreManager.OnAnyPlayerWins += ScoreManager_OnAnyPlayerWins;
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+
+        if(IsServer){
+            Transform playerTransform = Instantiate(playerPrefab);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+        }
     }
 
     private void OnClientConnected(ulong clientId){
+        if(IsServer){
+            Transform playerTransform = Instantiate(playerPrefab);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+        }
+
         if(!IsServer){
             SpawnBall();
         }
     }
 
     private void Update(){
-        if(Input.GetKeyDown(KeyCode.P) && !isGameEnding){
-            TogglePauseGame();
-        }
-
         if(isGameEnding){
             EndGameSequence();
-        }
-    }
-    
-    public void TogglePauseGame(){
-        gameIsPaused = !gameIsPaused;
-
-        if(gameIsPaused){
-            Time.timeScale = 0;
-            OnGamePaused?.Invoke(this, EventArgs.Empty);
-        } else {
-            Time.timeScale = 1f;
-            OnGameUnpaused?.Invoke(this, EventArgs.Empty);
         }
     }
 
