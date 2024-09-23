@@ -92,8 +92,7 @@ public class Ball : NetworkBehaviour
             moveDirection = this.moveDirection
         });
 
-        if(collision.gameObject.TryGetComponent<Player>(out Player player) ||
-        collision.gameObject.TryGetComponent<PlayerTwo>(out PlayerTwo playerTwo)){
+        if(collision.gameObject.TryGetComponent<Player>(out Player player)){
                 PlayerBounceBall(collision);
             } 
         }
