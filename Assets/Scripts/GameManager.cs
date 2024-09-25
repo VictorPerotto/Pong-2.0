@@ -6,9 +6,14 @@ using System.IO.IsolatedStorage;
 using Unity.Netcode;
 using UnityEngine.SocialPlatforms.Impl;
 using System.Collections.Generic;
+using Unity.Services.Lobbies.Models;
 
 public class GameManager : NetworkBehaviour{
-    private const string MAIN_MENU_SCENE_NAME = "MainMenuScene";
+
+    public static GameManager LocalInstance;
+
+    private const string LOBBY_SCENE_GAME = "LobbyScene";
+    private const string GAME_SCENE = "GameScene";
 
     public static event EventHandler OnAnyPlayerWins;
 
@@ -34,6 +39,12 @@ public class GameManager : NetworkBehaviour{
     }
 
     private void Awake(){
+        if(LocalInstance == null){
+            LocalInstance = this;
+        } else {
+            Destroy(LocalInstance);
+        }
+
         slowMotionDuration = slowMotionDurationMax;
     }
 
@@ -41,19 +52,19 @@ public class GameManager : NetworkBehaviour{
         ScoreManager.OnAnyPlayerWins += ScoreManager_OnAnyPlayerWins;
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
 
-        if(IsServer){
+        if(IsHost){
             Transform playerTransform = Instantiate(playerPrefab);
-            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(NetworkManager.Singleton.LocalClientId, true);
         }
     }
 
     private void OnClientConnected(ulong clientId){
-        if(IsServer){
+        if(IsHost){
             Transform playerTransform = Instantiate(playerPrefab);
-            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
 
-        if(!IsServer){
+        if(!IsHost){
             SpawnBall();
         }
     }
@@ -64,14 +75,34 @@ public class GameManager : NetworkBehaviour{
         }
     }
 
-    public static void RestartGame(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    public void RestartGame(){
+        if(IsServer){
+            RestartGameClientRpc();    
+        }
+    }
+
+    [ClientRpc]
+    private void RestartGameClientRpc(){
+        NetworkManager.Singleton.SceneManager.LoadScene(GAME_SCENE, LoadSceneMode.Single);
         Time.timeScale = 1f;
     }
 
-    public static void GoToMainMenu(){
-        SceneManager.LoadScene(MAIN_MENU_SCENE_NAME);
-        Time.timeScale = 1f;
+    public void GoToMainMenu(){
+        if(IsHost){
+            LobbyManager.Instance.DeleteLobby();
+            
+            SceneManager.LoadScene(LOBBY_SCENE_GAME, LoadSceneMode.Single);
+            
+            NetworkManager.Singleton.Shutdown();
+        } 
+        
+        if(IsClient) {
+            LobbyManager.Instance.LeaveLobby();
+
+            SceneManager.LoadScene(LOBBY_SCENE_GAME, LoadSceneMode.Single);
+            
+            NetworkManager.Singleton.Shutdown();
+        }
     }
 
     private void ScoreManager_OnAnyPlayerWins(object sender, ScoreManager.OnAnyPlayerWinsEventArgs e){
@@ -113,5 +144,10 @@ public class GameManager : NetworkBehaviour{
     public void SpawnBallServerRpc(){
         GameObject instantiadeBall = Instantiate(ballPrefab.gameObject, Vector3.zero, Quaternion.identity);
         instantiadeBall.GetComponent<NetworkObject>().Spawn(true);
+    }
+
+    public override void OnDestroy(){
+        ScoreManager.OnAnyPlayerWins -= ScoreManager_OnAnyPlayerWins;
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
     }
 }

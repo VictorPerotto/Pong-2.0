@@ -23,11 +23,11 @@ public class VictoryUI : MonoBehaviour
         }
 
         restartButton.onClick.AddListener(() => {
-            GameManager.RestartGame();
+            GameManager.LocalInstance.RestartGame();
         });
 
         mainMenuButton.onClick.AddListener(() => {
-            GameManager.GoToMainMenu();
+            GameManager.LocalInstance.GoToMainMenu();
         });
 
         Hide();

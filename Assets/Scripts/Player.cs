@@ -20,7 +20,11 @@ public class Player : NetworkBehaviour{
     }
 
     public override void OnNetworkSpawn(){
-        transform.position = spawnPositions[(int)OwnerClientId];
+        if(IsHost){
+            transform.position = spawnPositions[0];
+        } else {
+            transform.position = spawnPositions[1];
+        }   
     }
 
     private void Update(){

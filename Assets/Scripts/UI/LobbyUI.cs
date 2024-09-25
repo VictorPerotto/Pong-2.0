@@ -7,19 +7,18 @@ using UnityEngine.SceneManagement;
 
 public class LobbyUI : MonoBehaviour{
 
-    private const string GAME_SCENE = "GameScene";
-    
     [SerializeField] private Button CreateGameButton;
     [SerializeField] private Button JoinGameButton;
 
-    private void Awake(){
-        CreateGameButton.onClick.AddListener(() => {
-            NetworkManager.Singleton.StartHost();
-            NetworkManager.Singleton.SceneManager.LoadScene(GAME_SCENE, LoadSceneMode.Single);
-        });
+    private void Start(){
+        CreateGameButton.onClick.AddListener(CreateLobby);
 
         JoinGameButton.onClick.AddListener(() => {
-            NetworkManager.Singleton.StartClient();
+            JoinGameUI.Instance.Show();
         });
+    }
+
+    private void CreateLobby(){
+        LobbyManager.Instance.CreateLobby(Random.Range(0, 99).ToString());
     }
 }
