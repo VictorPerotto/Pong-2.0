@@ -13,7 +13,6 @@ public class GameManager : NetworkBehaviour{
     public static GameManager LocalInstance;
 
     private const string LOBBY_SCENE_GAME = "LobbyScene";
-    private const string GAME_SCENE = "GameScene";
 
     public static event EventHandler OnAnyPlayerWins;
 
@@ -73,18 +72,6 @@ public class GameManager : NetworkBehaviour{
         if(isGameEnding){
             EndGameSequence();
         }
-    }
-
-    public void RestartGame(){
-        if(IsServer){
-            RestartGameClientRpc();    
-        }
-    }
-
-    [ClientRpc]
-    private void RestartGameClientRpc(){
-        NetworkManager.Singleton.SceneManager.LoadScene(GAME_SCENE, LoadSceneMode.Single);
-        Time.timeScale = 1f;
     }
 
     public void GoToMainMenu(){

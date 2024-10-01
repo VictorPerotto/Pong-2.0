@@ -7,15 +7,18 @@ using UnityEngine.SceneManagement;
 
 public class LobbyUI : MonoBehaviour{
 
-    [SerializeField] private Button CreateGameButton;
-    [SerializeField] private Button JoinGameButton;
+    [SerializeField] private Button createGameButton;
+    [SerializeField] private Button joinGameButton;
+    [SerializeField] private Button quitButton;
 
     private void Start(){
-        CreateGameButton.onClick.AddListener(CreateLobby);
+        createGameButton.onClick.AddListener(CreateLobby);
 
-        JoinGameButton.onClick.AddListener(() => {
+        joinGameButton.onClick.AddListener(() => {
             JoinGameUI.Instance.Show();
         });
+
+        quitButton.onClick.AddListener(() => Application.Quit());
     }
 
     private void CreateLobby(){

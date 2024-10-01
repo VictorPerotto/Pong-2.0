@@ -14,17 +14,12 @@ public class VictoryUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI victoryText;
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Button restartButton;
 
     private void Awake(){
 
         if(Instance == null){
             Instance = this;
         }
-
-        restartButton.onClick.AddListener(() => {
-            GameManager.LocalInstance.RestartGame();
-        });
 
         mainMenuButton.onClick.AddListener(() => {
             GameManager.LocalInstance.GoToMainMenu();
